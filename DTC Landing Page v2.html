@@ -1,0 +1,205 @@
+<!doctype html>
+<html lang="hr">
+<head>
+<meta charset="utf-8" />
+<meta name="viewport" content="width=device-width,initial-scale=1" />
+<title>DTC — Playful Sketch (Refined)</title>
+<link rel="stylesheet" href="b-styles.css" />
+<style>
+  html, body { margin: 0; padding: 0; height: 100%; background: #e8dfc8; }
+  #root { width: 100vw; height: 100vh; }
+
+  .tweaks {
+    position: fixed; bottom: 20px; right: 20px; width: 300px;
+    background: #fff; border: 2px solid #1a1614; border-radius: 14px;
+    box-shadow: 6px 6px 0 rgba(0,0,0,0.15); z-index: 9999;
+    font-family: 'Archivo', sans-serif; display: none; overflow: hidden;
+  }
+  .tweaks.open { display: block; }
+  .tweaks-head {
+    padding: 14px 16px; background: #1a1614; color: #fff;
+    font-weight: 700; font-size: 13px;
+    display: flex; justify-content: space-between; align-items: center;
+  }
+  .tweaks-body { padding: 14px 16px; max-height: 70vh; overflow-y: auto; }
+  .tweak-row { margin-bottom: 14px; }
+  .tweak-label {
+    font-size: 11px; text-transform: uppercase; letter-spacing: 0.08em;
+    color: #6b7280; margin-bottom: 6px; font-weight: 600;
+  }
+  .tweak-chips { display: flex; flex-wrap: wrap; gap: 6px; }
+  .tweak-chip {
+    padding: 6px 12px; border: 1.5px solid #e5e7eb; border-radius: 99px;
+    font-size: 12px; cursor: pointer; background: #fff; font-family: inherit;
+  }
+  .tweak-chip.active { background: #1a1614; color: #fff; border-color: #1a1614; }
+  .tweak-input {
+    width: 100%; padding: 8px 10px; border: 1.5px solid #e5e7eb;
+    border-radius: 6px; font-family: inherit; font-size: 12px;
+  }
+</style>
+</head>
+<body>
+<div id="root"></div>
+
+<script src="https://unpkg.com/react@18.3.1/umd/react.development.js" integrity="sha384-hD6/rw4ppMLGNu3tX5cjIb+uRZ7UkRJ6BPkLpg4hAu/6onKUg4lLsHAs9EBPT82L" crossorigin="anonymous"></script>
+<script src="https://unpkg.com/react-dom@18.3.1/umd/react-dom.development.js" integrity="sha384-u6aeetuaXnQ38mYT8rp6sbXaQe3NL9t+IBXmnYxwkUI2Hw4bsp2Wvmx4yRQF1uAm" crossorigin="anonymous"></script>
+<script src="https://unpkg.com/@babel/standalone@7.29.0/babel.min.js" integrity="sha384-m08KidiNqLdpJqLq95G/LEi8Qvjl/xUYll3QILypMoQ65QorJ9Lvtp2RXYGBFj1y" crossorigin="anonymous"></script>
+
+<script type="text/babel" src="design-canvas.jsx"></script>
+<script type="text/babel" src="b-doodles.jsx"></script>
+<script type="text/babel" src="b-content.jsx"></script>
+<script type="text/babel" src="b-sections.jsx"></script>
+<script type="text/babel" src="b-var1.jsx"></script>
+<script type="text/babel" src="b-var2.jsx"></script>
+<script type="text/babel" src="b-var3.jsx"></script>
+
+<script type="text/babel">
+const DEFAULTS = /*EDITMODE-BEGIN*/{
+  "accent": "#ff5b2e",
+  "paper": "#f5f0e6",
+  "doodles": true,
+  "animations": true,
+  "density": "comfortable"
+}/*EDITMODE-END*/;
+
+function App() {
+  const [tw, setTw] = React.useState(DEFAULTS);
+  const [edit, setEdit] = React.useState(false);
+
+  React.useEffect(() => {
+    const root = document.documentElement;
+    root.style.setProperty('--accent', tw.accent);
+    const soft = tw.accent === '#ff5b2e' ? '#ffd9c7'
+      : tw.accent === '#e11d48' ? '#ffd1dc'
+      : tw.accent === '#2563eb' ? '#cfe0ff'
+      : tw.accent === '#16a34a' ? '#c9e4c5'
+      : tw.accent === '#7c3aed' ? '#e0d0ff' : '#ffd9c7';
+    root.style.setProperty('--accent-soft', soft);
+    root.style.setProperty('--paper', tw.paper);
+    const paper2 = tw.paper === '#faf6ec' ? '#f2ecdc'
+      : tw.paper === '#ffffff' ? '#f5f5f5'
+      : tw.paper === '#f5f0e6' ? '#ebe4d3'
+      : tw.paper === '#1a1614' ? '#242020' : '#f2ecdc';
+    root.style.setProperty('--paper-2', paper2);
+  }, [tw.accent, tw.paper]);
+
+  React.useEffect(() => {
+    const on = (e) => {
+      if (e.data?.type === '__activate_edit_mode') setEdit(true);
+      if (e.data?.type === '__deactivate_edit_mode') setEdit(false);
+    };
+    window.addEventListener('message', on);
+    window.parent.postMessage({ type: '__edit_mode_available' }, '*');
+    return () => window.removeEventListener('message', on);
+  }, []);
+
+  const set = (k, v) => {
+    setTw(p => ({ ...p, [k]: v }));
+    window.parent.postMessage({ type: '__edit_mode_set_keys', edits: { [k]: v } }, '*');
+  };
+
+  return (
+    <>
+      <DesignCanvas title="DTC — Playful Sketch (refined)" subtitle="3 polirane varijacije · hand-drawn doodles · scroll reveals · flip cards · mobile-ready">
+        <DCSection id="desktop" title="Desktop">
+          <DCArtboard id="b1" label="B1 · Collage Studio — sticky notes, flip cards, warmest" width={1280} height={900}>
+            <VariationB1 />
+          </DCArtboard>
+          <DCArtboard id="b2" label="B2 · Notebook Grid — centered, doodle scene, scroll row" width={1280} height={900}>
+            <VariationB2 />
+          </DCArtboard>
+          <DCArtboard id="b3" label="B3 · Split Editorial — live chat demo, magazine rows" width={1280} height={900}>
+            <VariationB3 />
+          </DCArtboard>
+        </DCSection>
+        <DCSection id="mobile" title="Mobile (375px)">
+          <DCArtboard id="m1" label="B1 mobile" width={375} height={820}>
+            <VariationB1 />
+          </DCArtboard>
+          <DCArtboard id="m2" label="B2 mobile" width={375} height={820}>
+            <VariationB2 />
+          </DCArtboard>
+          <DCArtboard id="m3" label="B3 mobile" width={375} height={820}>
+            <VariationB3 />
+          </DCArtboard>
+        </DCSection>
+      </DesignCanvas>
+
+      <div className={`tweaks ${edit ? 'open' : ''}`}>
+        <div className="tweaks-head">
+          <span>Tweaks</span>
+          <span style={{ opacity: 0.6, fontWeight: 400, fontSize: 11 }}>DTC · B refined</span>
+        </div>
+        <div className="tweaks-body">
+          <div className="tweak-row">
+            <div className="tweak-label">Accent boja</div>
+            <div className="tweak-chips">
+              {[
+                { c: '#ff5b2e', n: 'Orange' },
+                { c: '#e11d48', n: 'Red' },
+                { c: '#2563eb', n: 'Blue' },
+                { c: '#16a34a', n: 'Green' },
+                { c: '#7c3aed', n: 'Purple' },
+              ].map(o => (
+                <button key={o.c} className={`tweak-chip ${tw.accent === o.c ? 'active' : ''}`}
+                  onClick={() => set('accent', o.c)}
+                  style={{ display: 'flex', alignItems: 'center', gap: 6 }}>
+                  <span style={{ width: 10, height: 10, borderRadius: 99, background: o.c }} />
+                  {o.n}
+                </button>
+              ))}
+            </div>
+          </div>
+
+          <div className="tweak-row">
+            <div className="tweak-label">Paper / pozadina</div>
+            <div className="tweak-chips">
+              {[
+                { c: '#faf6ec', n: 'Cream' },
+                { c: '#f5f0e6', n: 'Beige' },
+                { c: '#ffffff', n: 'White' },
+                { c: '#1a1614', n: 'Dark' },
+              ].map(o => (
+                <button key={o.c} className={`tweak-chip ${tw.paper === o.c ? 'active' : ''}`}
+                  onClick={() => set('paper', o.c)}>{o.n}</button>
+              ))}
+            </div>
+          </div>
+
+          <div className="tweak-row">
+            <div className="tweak-label">Doodle anotacije</div>
+            <div className="tweak-chips">
+              <button className={`tweak-chip ${tw.doodles ? 'active' : ''}`}
+                onClick={() => set('doodles', true)}>Prikaži</button>
+              <button className={`tweak-chip ${!tw.doodles ? 'active' : ''}`}
+                onClick={() => set('doodles', false)}>Sakrij</button>
+            </div>
+          </div>
+
+          <div className="tweak-row">
+            <div className="tweak-label">Animacije</div>
+            <div className="tweak-chips">
+              <button className={`tweak-chip ${tw.animations ? 'active' : ''}`}
+                onClick={() => set('animations', true)}>Uključene</button>
+              <button className={`tweak-chip ${!tw.animations ? 'active' : ''}`}
+                onClick={() => set('animations', false)}>Isključene</button>
+            </div>
+          </div>
+
+          <div style={{ fontSize: 10, color: '#9ca3af', marginTop: 8, lineHeight: 1.4 }}>
+            3 desktop varijacije · 3 mobile preview · scroll, hover, tilt i draw-in interakcije. Kliknite bilo koji artboard za fullscreen pregled.
+          </div>
+        </div>
+      </div>
+
+      {!tw.doodles && <style>{`.script, .hand, .tape, [class*="hero-annot"] { display: none !important; } svg[style*="position: absolute"] { display: none !important; }`}</style>}
+      {!tw.animations && <style>{`.reveal { opacity: 1 !important; transform: none !important; } .tilt:hover { transform: none !important; box-shadow: 4px 4px 0 var(--line) !important; } .draw path, .draw line { animation: none !important; stroke-dashoffset: 0 !important; }`}</style>}
+    </>
+  );
+}
+
+ReactDOM.createRoot(document.getElementById('root')).render(<App />);
+</script>
+</body>
+</html>

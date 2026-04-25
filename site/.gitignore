@@ -1,0 +1,15 @@
+node_modules
+dist
+dist-ssr
+*.local
+.vite
+
+# TypeScript incremental build cache
+*.tsbuildinfo
+
+# Emitted JS from vite.config.ts (we only commit the .ts source)
+vite.config.js
+vite.config.d.ts
+
+.DS_Store
+*.log

@@ -1,0 +1,39 @@
+# Dependencies & build output
+node_modules/
+dist/
+dist-ssr/
+build/
+.cache/
+
+# Local env (never commit secrets — only .env.example is committed)
+.env
+.env.local
+.env.*.local
+
+# Vite + bundler scratch
+.vite/
+*.local
+
+# Editor + OS
+.DS_Store
+.idea/
+.vscode/
+*.swp
+*.swo
+*~
+
+# Logs
+*.log
+npm-debug.log*
+yarn-debug.log*
+yarn-error.log*
+
+# Vercel link
+.vercel/
+
+# Claude / autopilot state (machine-local, not source)
+.omc/
+.claude/
+
+# OMC plan scratch
+.omc.jsonc

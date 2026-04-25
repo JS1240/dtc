@@ -1,0 +1,227 @@
+<!doctype html>
+<html lang="hr">
+<head>
+<meta charset="utf-8" />
+<meta name="viewport" content="width=device-width,initial-scale=1" />
+<title>DTC — Landing Page Wireframes</title>
+<link rel="stylesheet" href="styles.css" />
+<style>
+  html, body { margin: 0; padding: 0; height: 100%; background: #e8e4d7; font-family: 'Archivo', sans-serif; }
+  #root { width: 100vw; height: 100vh; }
+
+  /* Tweaks panel */
+  .tweaks {
+    position: fixed;
+    bottom: 20px;
+    right: 20px;
+    width: 280px;
+    background: #fff;
+    border: 2px solid #1a1a1a;
+    border-radius: 12px;
+    box-shadow: 6px 6px 0 rgba(0,0,0,0.15);
+    z-index: 9999;
+    font-family: 'Archivo', sans-serif;
+    display: none;
+    overflow: hidden;
+  }
+  .tweaks.open { display: block; }
+  .tweaks-head {
+    padding: 14px 16px;
+    background: #1a1a1a;
+    color: #fff;
+    font-weight: 700;
+    font-size: 13px;
+    display: flex;
+    justify-content: space-between;
+    align-items: center;
+  }
+  .tweaks-body { padding: 14px 16px; }
+  .tweak-row { margin-bottom: 14px; }
+  .tweak-row:last-child { margin-bottom: 0; }
+  .tweak-label {
+    font-size: 11px;
+    text-transform: uppercase;
+    letter-spacing: 0.08em;
+    color: #6b7280;
+    margin-bottom: 6px;
+    font-weight: 600;
+  }
+  .tweak-chips { display: flex; flex-wrap: wrap; gap: 6px; }
+  .tweak-chip {
+    padding: 6px 12px;
+    border: 1.5px solid #e5e7eb;
+    border-radius: 99px;
+    font-size: 12px;
+    cursor: pointer;
+    background: #fff;
+    font-family: inherit;
+  }
+  .tweak-chip.active {
+    background: #1a1a1a;
+    color: #fff;
+    border-color: #1a1a1a;
+  }
+  .tweak-input {
+    width: 100%;
+    padding: 8px 10px;
+    border: 1.5px solid #e5e7eb;
+    border-radius: 6px;
+    font-family: inherit;
+    font-size: 12px;
+  }
+</style>
+</head>
+<body>
+<div id="root"></div>
+
+<!-- React + Babel pinned -->
+<script src="https://unpkg.com/react@18.3.1/umd/react.development.js" integrity="sha384-hD6/rw4ppMLGNu3tX5cjIb+uRZ7UkRJ6BPkLpg4hAu/6onKUg4lLsHAs9EBPT82L" crossorigin="anonymous"></script>
+<script src="https://unpkg.com/react-dom@18.3.1/umd/react-dom.development.js" integrity="sha384-u6aeetuaXnQ38mYT8rp6sbXaQe3NL9t+IBXmnYxwkUI2Hw4bsp2Wvmx4yRQF1uAm" crossorigin="anonymous"></script>
+<script src="https://unpkg.com/@babel/standalone@7.29.0/babel.min.js" integrity="sha384-m08KidiNqLdpJqLq95G/LEi8Qvjl/xUYll3QILypMoQ65QorJ9Lvtp2RXYGBFj1y" crossorigin="anonymous"></script>
+
+<script type="text/babel" src="design-canvas.jsx"></script>
+<script type="text/babel" src="shared.jsx"></script>
+<script type="text/babel" src="variation-a.jsx"></script>
+<script type="text/babel" src="variation-b.jsx"></script>
+<script type="text/babel" src="variation-c.jsx"></script>
+<script type="text/babel" src="variation-d.jsx"></script>
+
+<script type="text/babel">
+// Tweaks defaults (persisted via EDITMODE markers)
+const TWEAKS = /*EDITMODE-BEGIN*/{
+  "headline": "Gradimo vašu digitalnu budućnost.",
+  "cta": "Zatraži ponudu",
+  "density": "compact",
+  "accent": "#ff5b2e",
+  "showAnnotations": true
+}/*EDITMODE-END*/;
+
+function App() {
+  const [tweaks, setTweaks] = React.useState(TWEAKS);
+  const [editMode, setEditMode] = React.useState(false);
+
+  // Apply accent color globally
+  React.useEffect(() => {
+    document.documentElement.style.setProperty('--accent', tweaks.accent);
+  }, [tweaks.accent]);
+
+  // Edit mode plumbing
+  React.useEffect(() => {
+    const onMsg = (e) => {
+      if (e.data?.type === '__activate_edit_mode') setEditMode(true);
+      if (e.data?.type === '__deactivate_edit_mode') setEditMode(false);
+    };
+    window.addEventListener('message', onMsg);
+    window.parent.postMessage({ type: '__edit_mode_available' }, '*');
+    return () => window.removeEventListener('message', onMsg);
+  }, []);
+
+  const updateTweak = (key, val) => {
+    setTweaks(prev => ({ ...prev, [key]: val }));
+    window.parent.postMessage({
+      type: '__edit_mode_set_keys',
+      edits: { [key]: val },
+    }, '*');
+  };
+
+  // Density scales — apply via CSS vars if needed
+  const densityScale = { compact: 0.9, comfortable: 1, spacious: 1.1 }[tweaks.density] || 1;
+
+  return (
+    <>
+      <DesignCanvas title="DTC — Landing Page Wireframes" subtitle="Mid-fi eksploracija · 4 smjera · croatian copy">
+        <DCSection id="variations" title="Varijacije">
+          <DCArtboard id="a" label="A · Editorial — minimal, premium, oversized type" width={1280} height={3200}>
+            <VariationA />
+          </DCArtboard>
+          <DCArtboard id="b" label="B · Playful Sketch — warm, hand-drawn, asymmetric" width={1280} height={3400}>
+            <VariationB />
+          </DCArtboard>
+          <DCArtboard id="c" label="C · Dark Technical — AI-forward, monospace, terminal" width={1280} height={3300}>
+            <VariationC />
+          </DCArtboard>
+          <DCArtboard id="d" label="D · Corporate Trust — clean, blue, enterprise" width={1280} height={3600}>
+            <VariationD />
+          </DCArtboard>
+        </DCSection>
+      </DesignCanvas>
+
+      {/* TWEAKS PANEL */}
+      <div className={`tweaks ${editMode ? 'open' : ''}`}>
+        <div className="tweaks-head">
+          <span>Tweaks</span>
+          <span style={{ opacity: 0.6, fontWeight: 400, fontSize: 11 }}>DTC wireframes</span>
+        </div>
+        <div className="tweaks-body">
+          <div className="tweak-row">
+            <div className="tweak-label">Accent boja</div>
+            <div className="tweak-chips">
+              {[
+                { c: '#ff5b2e', n: 'Orange' },
+                { c: '#2e5bff', n: 'Blue' },
+                { c: '#2ea853', n: 'Green' },
+                { c: '#7c3aed', n: 'Purple' },
+                { c: '#ec4899', n: 'Pink' },
+              ].map(o => (
+                <button key={o.c} className={`tweak-chip ${tweaks.accent === o.c ? 'active' : ''}`}
+                  onClick={() => updateTweak('accent', o.c)}
+                  style={{ display: 'flex', alignItems: 'center', gap: 6 }}>
+                  <span style={{ width: 10, height: 10, borderRadius: 99, background: o.c }} />
+                  {o.n}
+                </button>
+              ))}
+            </div>
+          </div>
+
+          <div className="tweak-row">
+            <div className="tweak-label">Gustoća</div>
+            <div className="tweak-chips">
+              {['compact', 'comfortable', 'spacious'].map(d => (
+                <button key={d} className={`tweak-chip ${tweaks.density === d ? 'active' : ''}`}
+                  onClick={() => updateTweak('density', d)}>{d}</button>
+              ))}
+            </div>
+          </div>
+
+          <div className="tweak-row">
+            <div className="tweak-label">Headline</div>
+            <input className="tweak-input" value={tweaks.headline}
+              onChange={(e) => updateTweak('headline', e.target.value)} />
+          </div>
+
+          <div className="tweak-row">
+            <div className="tweak-label">CTA tekst</div>
+            <div className="tweak-chips">
+              {['Zakaži razgovor', 'Zatraži ponudu', 'Pokreni projekt', 'Kontaktiraj nas'].map(c => (
+                <button key={c} className={`tweak-chip ${tweaks.cta === c ? 'active' : ''}`}
+                  onClick={() => updateTweak('cta', c)}>{c}</button>
+              ))}
+            </div>
+          </div>
+
+          <div className="tweak-row">
+            <div className="tweak-label">Annotacije</div>
+            <div className="tweak-chips">
+              <button className={`tweak-chip ${tweaks.showAnnotations ? 'active' : ''}`}
+                onClick={() => updateTweak('showAnnotations', true)}>Prikaži</button>
+              <button className={`tweak-chip ${!tweaks.showAnnotations ? 'active' : ''}`}
+                onClick={() => updateTweak('showAnnotations', false)}>Sakrij</button>
+            </div>
+          </div>
+
+          <div style={{ fontSize: 10, color: '#9ca3af', marginTop: 8, lineHeight: 1.4 }}>
+            Napomena: za pregled vizualnih i layout varijacija, koristite 4 artboarda iznad. Svaki ima drugačiji stil, strukturu i interakcijski uzorak.
+          </div>
+        </div>
+      </div>
+
+      {/* Annotation hide */}
+      {!tweaks.showAnnotations && <style>{`.wf-note, svg[style*="overflow: visible"] { display: none !important; }`}</style>}
+    </>
+  );
+}
+
+ReactDOM.createRoot(document.getElementById('root')).render(<App />);
+</script>
+</body>
+</html>
