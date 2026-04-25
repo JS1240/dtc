@@ -1,4 +1,5 @@
 import type { ReactNode } from 'react';
+import { SpeedInsights } from '@vercel/speed-insights/react';
 import { LeadFormProvider } from './lib/leadForm';
 import { StickyNav } from './components/StickyNav';
 import { HeroNotebook } from './sections/HeroNotebook';
@@ -49,5 +50,6 @@ export const App = () => (
       </Anchor>
     </main>
     <FooterCTA />
+    <SpeedInsights />
   </LeadFormProvider>
 );
