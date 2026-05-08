@@ -104,8 +104,132 @@ body {
 .tilt:hover { transform: translate(-4px, -6px) rotate(-0.5deg); box-shadow: 10px 12px 0 var(--line); }
 
 /* Reveal on scroll */
-.reveal { opacity: 0; transform: translateY(30px); transition: opacity 0.8s, transform 0.8s; }
-.reveal.in { opacity: 1; transform: none; }
+.reveal { opacity: 0; transform: translateY(30px); transition: opacity 0.8s, transform 0.8s; will-change: transform, opacity; }
+.reveal.in { opacity: 1; transform: none; will-change: auto; }
+
+/* Floating animation for hero stickers */
+@keyframes float-y {
+  0%, 100% { transform: translateY(0); }
+  50% { transform: translateY(-6px); }
+}
+.float { animation: float-y 5.5s cubic-bezier(0.45, 0, 0.55, 1) infinite; }
+.float.d1 { animation-delay: -0.6s; animation-duration: 6s; }
+.float.d2 { animation-delay: -1.4s; animation-duration: 5.2s; }
+.float.d3 { animation-delay: -2.1s; animation-duration: 6.4s; }
+.float.d4 { animation-delay: -2.8s; animation-duration: 5.8s; }
+
+/* Hero parallax scene */
+.hero-scene-inner {
+  position: absolute;
+  inset: 0;
+  transform: translate3d(var(--px, 0px), var(--py, 0px), 0);
+  transition: transform 0.5s cubic-bezier(0.2, 0.8, 0.2, 1);
+}
+
+/* Hero custom cursor follower (only on fine pointer) */
+.hero-cursor {
+  position: absolute;
+  width: 32px;
+  height: 32px;
+  border: 2px solid var(--accent);
+  border-radius: 50%;
+  pointer-events: none;
+  transform: translate(-50%, -50%) scale(0);
+  opacity: 0;
+  transition: transform 0.18s cubic-bezier(0.2, 0.8, 0.2, 1), opacity 0.2s;
+  z-index: 5;
+  background: rgba(255, 91, 46, 0.08);
+}
+@media (hover: hover) and (pointer: fine) {
+  .hero-cursor.is-active {
+    opacity: 1;
+    transform: translate(-50%, -50%) scale(1);
+  }
+}
+
+/* Logo hover: grayscale -> color + lift */
+.client-logo {
+  filter: grayscale(100%);
+  opacity: 0.78;
+  transition: filter 0.3s, opacity 0.3s, transform 0.3s;
+}
+.client-logo:hover, .client-logo:focus-visible {
+  filter: grayscale(0%);
+  opacity: 1;
+  transform: translateY(-2px);
+}
+
+/* Touch/hover hints */
+.hint-hover { display: inline; }
+.hint-tap { display: none; }
+@media (hover: none) {
+  .hint-hover { display: none; }
+  .hint-tap { display: inline; }
+}
+
+/* Active/press feedback on buttons */
+.btn:active { transform: translate(-1px, -1px) scale(0.98); box-shadow: 2px 2px 0 var(--line); }
+.btn.ghost:active { transform: none; box-shadow: none; }
+
+/* Scroll progress bar */
+.scroll-progress {
+  position: fixed;
+  top: 0;
+  left: 0;
+  height: 3px;
+  width: 100%;
+  background: transparent;
+  z-index: 1000;
+  pointer-events: none;
+}
+.scroll-progress > span {
+  display: block;
+  height: 100%;
+  background: var(--accent);
+  transform-origin: left center;
+  transform: scaleX(var(--p, 0));
+  transition: transform 0.08s linear;
+}
+
+/* Section divider variants */
+.divider-dots {
+  height: 24px;
+  display: flex;
+  justify-content: center;
+  align-items: center;
+  gap: 14px;
+  margin: 0 48px;
+}
+.divider-dots > span {
+  width: 6px;
+  height: 6px;
+  border-radius: 50%;
+  background: var(--ink);
+  opacity: 0.35;
+}
+.divider-dots > span:nth-child(2) { opacity: 0.55; transform: scale(1.2); }
+.divider-dots > span:nth-child(3) { background: var(--accent); opacity: 1; transform: scale(1.4); }
+.divider-dots > span:nth-child(4) { opacity: 0.55; transform: scale(1.2); }
+
+.divider-arrow {
+  height: 36px;
+  display: flex;
+  justify-content: center;
+  align-items: center;
+  margin: 0 48px;
+}
+
+/* Reduced-motion: disable all decorative animations */
+@media (prefers-reduced-motion: reduce) {
+  .reveal { opacity: 1 !important; transform: none !important; transition: none !important; }
+  .draw path, .draw line, .draw polyline { stroke-dasharray: none !important; stroke-dashoffset: 0 !important; animation: none !important; }
+  .marquee-track { animation: none !important; }
+  .float, .float.d1, .float.d2, .float.d3, .float.d4 { animation: none !important; }
+  .hero-scene-inner { transition: none !important; transform: none !important; }
+  .hero-cursor { display: none !important; }
+  .blink { animation: none !important; }
+  .scroll-progress > span { transition: none !important; }
+}
 
 /* Squiggly divider */
 .divider-squiggle {

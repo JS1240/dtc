@@ -1,24 +1,17 @@
 import { Reveal } from '../components/Reveal';
 import { Doodle } from '../components/Doodle';
-import { CASE_HERO } from '../content/data';
+import { CASE_HERO, CASE_SECONDARY } from '../content/data';
 import { useLeadForm } from '../lib/leadForm';
 
 const STAT_BG = ['var(--accent-soft)', 'var(--blue)', 'var(--yellow)', 'var(--green)'];
-
-const SOLUTION_POINTS = [
-  'AI agent za obradu narudžbi 24/7',
-  'Automatizacija fakturiranja i CRM sync',
-  'Redizajn checkout flow-a',
-  'Integracija s Shopify i HubSpot',
-];
 
 export const CaseStudyDetail = () => {
   const { open } = useLeadForm();
 
   const onAskAboutCase = () => {
     open({
-      service: 'AI agenti',
-      message: `Zanima me case study ${CASE_HERO.client} (${CASE_HERO.tag}). Možete li mi poslati više detalja o pristupu i implementaciji?`,
+      service: 'Custom software',
+      message: `Zanima me projekt ${CASE_HERO.client} (${CASE_HERO.tag}). Možete li mi poslati više detalja o pristupu i implementaciji?`,
       focus: 'message',
     });
   };
@@ -27,7 +20,7 @@ export const CaseStudyDetail = () => {
     <section>
       <div style={{ maxWidth: 1200, margin: '0 auto' }}>
         <Reveal>
-          <div className="eyebrow">case study</div>
+          <div className="eyebrow">odabrani radovi</div>
           <h2 className="h-lg" style={{ fontSize: 52, marginTop: 8, maxWidth: 900 }}>
             {CASE_HERO.title}
           </h2>
@@ -45,6 +38,8 @@ export const CaseStudyDetail = () => {
                   justifyContent: 'space-between',
                   alignItems: 'center',
                   marginBottom: 24,
+                  gap: 12,
+                  flexWrap: 'wrap',
                 }}
               >
                 <span className="tag accent">{CASE_HERO.tag}</span>
@@ -64,7 +59,7 @@ export const CaseStudyDetail = () => {
                       borderRadius: 10,
                     }}
                   >
-                    <div className="h-display" style={{ fontSize: 44, letterSpacing: '-0.04em' }}>
+                    <div className="h-display" style={{ fontSize: 34, letterSpacing: '-0.04em' }}>
                       {s.n}
                     </div>
                     <div style={{ fontSize: 13, marginTop: 4 }}>{s.l}</div>
@@ -79,14 +74,31 @@ export const CaseStudyDetail = () => {
                   background: 'var(--paper-2)',
                   borderRadius: 10,
                   borderLeft: '3px solid var(--accent)',
+                  display: 'flex',
+                  alignItems: 'center',
+                  gap: 16,
                 }}
               >
-                <div className="hand" style={{ fontSize: 17, lineHeight: 1.5 }}>
-                  "{CASE_HERO.quote}"
-                </div>
-                <div style={{ fontSize: 12, marginTop: 12, color: 'var(--ink-2)', fontWeight: 600 }}>
-                  — {CASE_HERO.by}
-                </div>
+                <img
+                  src={CASE_HERO.logo}
+                  alt={`${CASE_HERO.client} logo`}
+                  style={{ maxHeight: 40, maxWidth: 140, objectFit: 'contain', display: 'block' }}
+                />
+                <a
+                  href={CASE_HERO.url}
+                  target="_blank"
+                  rel="noopener noreferrer"
+                  style={{
+                    marginLeft: 'auto',
+                    fontFamily: 'var(--font-ui)',
+                    fontWeight: 600,
+                    fontSize: 13,
+                    color: 'var(--ink)',
+                    textDecoration: 'underline',
+                  }}
+                >
+                  {CASE_HERO.url.replace(/^https?:\/\//, '').replace(/\/$/, '')} ↗
+                </a>
               </div>
             </div>
           </Reveal>
@@ -110,7 +122,7 @@ export const CaseStudyDetail = () => {
                   RJEŠENJE
                 </div>
                 <div className="stack gap-8">
-                  {SOLUTION_POINTS.map((x) => (
+                  {CASE_HERO.solution.map((x) => (
                     <div
                       key={x}
                       style={{ display: 'flex', gap: 10, alignItems: 'flex-start', fontSize: 14 }}
@@ -127,9 +139,54 @@ export const CaseStudyDetail = () => {
             </div>
           </Reveal>
         </div>
+
+        <Reveal delay={200}>
+          <div
+            className="case-card-secondary"
+            style={{
+              marginTop: 56,
+              display: 'grid',
+              gridTemplateColumns: '160px 1fr auto',
+              gap: 28,
+              alignItems: 'center',
+              padding: '24px 28px',
+              background: '#fff',
+              border: '2px solid var(--line)',
+              borderRadius: '12px 8px 12px 10px / 10px 12px 8px 12px',
+              boxShadow: '4px 4px 0 var(--line)',
+            }}
+          >
+            <img
+              src={CASE_SECONDARY.logo}
+              alt={`${CASE_SECONDARY.client} logo`}
+              style={{ maxHeight: 96, maxWidth: 160, objectFit: 'contain', display: 'block' }}
+            />
+            <div className="stack gap-8">
+              <div style={{ display: 'flex', gap: 10, alignItems: 'center', flexWrap: 'wrap' }}>
+                <div style={{ fontWeight: 800, fontSize: 18 }}>{CASE_SECONDARY.client}</div>
+                <span className="tag yellow" style={{ fontSize: 11 }}>
+                  {CASE_SECONDARY.tag}
+                </span>
+              </div>
+              <div className="body" style={{ fontSize: 15 }}>
+                {CASE_SECONDARY.summary}
+              </div>
+            </div>
+            <a
+              href={CASE_SECONDARY.url}
+              target="_blank"
+              rel="noopener noreferrer"
+              className="btn"
+              style={{ fontSize: 13 }}
+            >
+              Posjeti ↗
+            </a>
+          </div>
+        </Reveal>
       </div>
       <style>{`@media (max-width: 820px) {
         .case-grid { grid-template-columns: 1fr !important; }
+        .case-card-secondary { grid-template-columns: 1fr !important; text-align: left; }
       }`}</style>
     </section>
   );

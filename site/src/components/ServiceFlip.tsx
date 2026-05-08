@@ -117,7 +117,14 @@ export const ServiceFlip = ({ s, i }: ServiceFlipProps) => {
                 {s.from}
               </span>
               <span className="script" style={{ fontSize: 15, color: s.color, fontWeight: 600 }}>
-                {flipped ? 'detalji ↓' : 'hover →'}
+                {flipped ? (
+                  'detalji ↓'
+                ) : (
+                  <>
+                    <span className="hint-hover">hover →</span>
+                    <span className="hint-tap">tap →</span>
+                  </>
+                )}
               </span>
             </div>
           </div>
